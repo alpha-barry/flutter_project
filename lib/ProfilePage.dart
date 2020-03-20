@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:modue_flutter_ex2/ContactsPage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -19,8 +20,13 @@ class ProfilePageState extends State<ProfilePage>{
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
-    setState(() {
-      _image = image;
+    final StorageReference storageReference = FirebaseStorage().ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
+    storageReference.putFile(image).onComplete.then((onValue) {
+      onValue.ref.getDownloadURL().then((onValue){
+        setState(() {
+          imgUrl = onValue;
+        });
+      });
     });
   }
 
@@ -28,11 +34,28 @@ class ProfilePageState extends State<ProfilePage>{
   void initState() {
     // TODO: implement initState
     super.initState();
+
+
+    imgUrl = "https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34";
+
+    Firestore.instance.document('profiles/' + UserInf.uid).snapshots().listen((onData){
+      UserInf.fullName = onData.data['firstName'] + " " + onData.data["lastName"];
+    });
+
+    final StorageReference storageReference = FirebaseStorage.instance
+        .ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
+    storageReference.getDownloadURL().then((onValue) {
+      setState(() {
+        if (onValue != null)
+          imgUrl = onValue;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+
     return Scaffold(
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
@@ -43,23 +66,27 @@ class ProfilePageState extends State<ProfilePage>{
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Card(
-              child: Container(
-                child: ListTile(
-                  trailing:  FloatingActionButton(
-                    onPressed: getImage,
-                    tooltip: 'Pick Image',
-                    child: Icon(Icons.add_a_photo),
+            Center(
+              child: Column(
+                children: <Widget>[
+                  Card(
+                    child: Container(
+                      width: 150,
+                      height: 150,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: imgUrl == null
+                                    ? Image.file(_image).image
+                                    : NetworkImage(imgUrl),
+                                fit: BoxFit.cover),
+                            borderRadius: BorderRadius.all(Radius.circular(45.0)),
+                        ),
+                      ),
+                    ),
                   ),
-                  title: _image == null
-                      ? Text('No image selected.')
-                      : Image.file(_image, height: 60.0,
-                    fit: BoxFit.contain),
-                  onTap: () {
-                    // Update the state of the app.
-                    // ...
-                  },
-                ),
+                  FloatingActionButton(onPressed: getImage, child: Icon(Icons.photo_camera),),
+                ],
               ),
             ),
           ],

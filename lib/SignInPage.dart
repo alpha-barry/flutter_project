@@ -2,16 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
-import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
-class SignInPage extends StatelessWidget {
+
+class SignInPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return SignInPageState();
+  }
+
+}
+
+class SignInPageState extends State<SignInPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String email;
   String password;
   bool isButtonPressed = false;
-
-  SignInPage({Key key}) : super(key: key);
+  String error = "";
 
   Future<String> signIn(String email, String password) async {
     AuthResult result = await _auth.signInWithEmailAndPassword(
@@ -56,6 +64,11 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
 
+              Text(
+                  error,
+                  style: TextStyle(fontSize: 20)
+              ),
+
               Padding(
                 padding: EdgeInsets.all(26.0),
                 child: RaisedButton(
@@ -69,7 +82,9 @@ class SignInPage extends StatelessWidget {
                             builder: (context) => ProfilePage()));
                       }).catchError((onError) {
                         isButtonPressed = false;
-                        print('EROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
+                        setState(() {
+                          error = "erreur mail/mdp";
+                        });
                       });
                     }
                   },

@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modue_flutter_ex2/ConvListPage.dart';
+import 'package:modue_flutter_ex2/ProfilePage.dart';
+import 'package:modue_flutter_ex2/RecContactsPage.dart';
 import 'package:modue_flutter_ex2/SearchMemberPage.dart';
 
 import '../ContactsPage.dart';
@@ -31,7 +34,7 @@ Widget HeaderWidget(BuildContext context){
                 Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Text(
-                    "Mon Profil",
+                    "Menu",
                     style: new TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
@@ -45,6 +48,16 @@ Widget HeaderWidget(BuildContext context){
           decoration: BoxDecoration(
             color: Colors.blue,
           ),
+        ),
+        ListTile(
+          trailing: Icon(Icons.search, color: Colors.blue,),
+          title: Text('Mon profil', style: TextStyle(color: Colors.blue),),
+          onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ProfilePage()));
+            // Update the state of the app.
+            // ...
+          },
         ),
         ListTile(
           trailing: Icon(Icons.search, color: Colors.blue,),
@@ -70,6 +83,8 @@ Widget HeaderWidget(BuildContext context){
           trailing: Icon(Icons.send, color: Colors.blue),
           title: Text('Invitations', style: TextStyle(color: Colors.blue),),
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => RecContactsPage()));
             // Update the state of the app.
             // ...
           },
@@ -78,6 +93,8 @@ Widget HeaderWidget(BuildContext context){
           trailing: Icon(Icons.message, color: Colors.blue,),
           title: Text('Mes messages', style: TextStyle(color: Colors.blue),),
           onTap: () {
+            Navigator.push(context, MaterialPageRoute(
+                builder: (context) => ConvListPage()));
             // Update the state of the app.
             // ...
           },

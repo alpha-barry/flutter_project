@@ -40,7 +40,7 @@ class SearchMemberPageState extends State<SearchMemberPageStateful> {
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("profils").snapshots(),
+        stream: Firestore.instance.collection("profiles").snapshots(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
@@ -84,7 +84,7 @@ class CustomCard extends State<CustomCardState> {
   void initState() {
     super.initState();
 
-    Firestore.instance.collection("profils").document(UserInf.uid).snapshots().listen((onValue){
+    Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().listen((onValue){
       List contactsList = onValue.data["contacts"];
       List recContactsList = onValue.data["rec_contacts"];
       List sendContactsList = onValue.data["send_contacts"];
@@ -107,11 +107,11 @@ class CustomCard extends State<CustomCardState> {
   }
 
   void  removeContact(String userUid){
-    /*Firestore.instance.collection("profiles").document(myUid).snapshots().map((convert){
+    /*Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().map((convert){
       List list = convert.data[];
     });*/
-    Firestore.instance.collection("profils").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([userUid])});
-    Firestore.instance.collection("profils").document(userUid).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([userUid])});
+    Firestore.instance.collection("profiles").document(userUid).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
   }
 
   Future<void> removeContactAlertDialog(String userUid) async {
@@ -166,14 +166,59 @@ class CustomCard extends State<CustomCardState> {
             FlatButton(
               child: Text('Oui'),
               onPressed: () {
-                Firestore.instance.collection("profils").document(UserInf.uid).updateData({"send_contacts": FieldValue.arrayRemove([contact.documentID])});
-                Firestore.instance.collection("profils").document(contact.documentID).updateData({"rec_contacts": FieldValue.arrayRemove([UserInf.uid])});
+                Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"send_contacts": FieldValue.arrayRemove([contact.documentID])});
+                Firestore.instance.collection("profiles").document(contact.documentID).updateData({"rec_contacts": FieldValue.arrayRemove([UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
               child: Text('Non'),
               onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void  acceptContact(){
+    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact.documentID])}).then((onValue){
+      Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayUnion([contact.documentID])});
+    });
+    Firestore.instance.collection("profiles").document(contact.documentID).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
+      Firestore.instance.collection("profiles").document(contact.documentID).updateData({"contacts": FieldValue.arrayUnion([UserInf.uid])});
+    });
+  }
+
+  Future<void> acceptContactAlertDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Ajout de contact'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Voulez vous ajouter ' + contact["firstName"] + " " + contact["lastName"] + " à vos contacts ?"),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Accepter'),
+              onPressed: () {
+                acceptContact();
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text('Refuser'),
+              onPressed: () {
+                Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact.documentID])});
+                Firestore.instance.collection("profiles").document(contact.documentID).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
@@ -213,17 +258,17 @@ class CustomCard extends State<CustomCardState> {
                   removeContactAlertDialog(contact.documentID);
                 }
                 else if (status == "1") {
-                  //acceptContactAlertDialog();
+                  acceptContactAlertDialog();
                 }
                 else if (status == "2") {
                   cancelContactAlertDialog();
                 }
                 else if (status == "3"){
-                  Firestore.instance.collection("profils")
+                  Firestore.instance.collection("profiles")
                       .document(UserInf.uid)
                       .updateData(
                       {"send_contacts": FieldValue.arrayUnion([contact.documentID])});
-                  Firestore.instance.collection("profils")
+                  Firestore.instance.collection("profiles")
                       .document(contact.documentID)
                       .updateData(
                       {"rec_contacts": FieldValue.arrayUnion([UserInf.uid])});

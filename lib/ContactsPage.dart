@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:modue_flutter_ex2/MessengerPage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
 
@@ -27,11 +28,11 @@ class ContactsPageStateful extends StatefulWidget {
 class ContactsPageState extends State<ContactsPageStateful> {
 
   void  removeContact(DocumentSnapshot contact){
-    /*Firestore.instance.collection("profils").document(UserInf.uid).snapshots().map((convert){
+    /*Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().map((convert){
       List list = convert.data[];
     });*/
-    Firestore.instance.collection("profils").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([contact["uid"]])});
-    Firestore.instance.collection("profils").document(contact["uid"]).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([contact["uid"]])});
+    Firestore.instance.collection("profiles").document(contact["uid"]).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
   }
 
   Future<void> removeContactAlertDialog(DocumentSnapshot contact) async {
@@ -85,8 +86,8 @@ class ContactsPageState extends State<ContactsPageStateful> {
                             icon: Icon(Icons.message, color: Colors.indigo),
                             onPressed: () {
                               UserInf.contactUid = contacts.documents.elementAt(index).documentID;
-                             /* viewModel.changeView(
-                                  route: _routing.chatScreenPage, widgetContext: context);*/
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => MessengerPage()));
                             }),
                         IconButton(
                             icon: Icon(Icons.more_vert, color: Colors.indigo,),
@@ -104,7 +105,7 @@ class ContactsPageState extends State<ContactsPageStateful> {
   @override
   Widget build(BuildContext context) {
     return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("profils").where("contacts", arrayContains: UserInf.uid).snapshots(),
+        stream: Firestore.instance.collection("profiles").where("contacts", arrayContains: UserInf.uid).snapshots(),
         builder: (context, snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:

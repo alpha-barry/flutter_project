@@ -1,10 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 // ignore: must_be_immutable
-class SignUpPage extends StatelessWidget {
+
+class SignUpPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return SignUpPageState();
+  }
+
+}
+class SignUpPageState extends State<SignUpPage> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String firstName;
@@ -14,7 +24,7 @@ class SignUpPage extends StatelessWidget {
   String confirmPassword;
   bool isButtonPressed = false;
 
-  SignUpPage({Key key}) : super(key: key);
+  String error = "";
 
   Future<String> signUp(String email, String password) async {
     AuthResult result = await _auth.createUserWithEmailAndPassword(
@@ -94,28 +104,61 @@ class SignUpPage extends StatelessWidget {
                 ),
               ),
 
+              Text(
+                  error,
+                  style: TextStyle(fontSize: 20)
+              ),
               Padding(
                 padding: EdgeInsets.all(26.0),
                 child:  RaisedButton(
                   onPressed: () {
                     if (!isButtonPressed) {
                       isButtonPressed = true;
-                      if (password == confirmPassword) {
-                        Future<String> uid = signUp(email, password);
-                        uid.then((onValue) {
-                          Firestore.instance.collection('profils').document(onValue)
-                              .setData({ 'firstName': firstName, 'lastName': lastName });
+                      if (firstName != null && lastName != null && firstName.trim().length > 0 && lastName.trim().length > 0) {
+                        if (password == confirmPassword) {
+                          if (password != null && password.length < 6) {
+                            isButtonPressed = false;
+                            setState(() {
+                              error = "Le mdp doit avoir au plus de 5 caractères";
+                            });
+                          }
+                          else {
+                            Future<String> uid = signUp(email, password);
+                            uid.then((onValue) {
+                              Firestore.instance.collection('profiles').document(
+                                  onValue)
+                                  .setData({
+                                'firstName': firstName.trim(),
+                                'lastName': lastName.trim(),
+                                'uid': UserInf.uid
+                              });
+
+                             // final StorageReference storageReference = FirebaseStorage().ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
+                              //storageReference.putFile(image);
+
+                              isButtonPressed = false;
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) => ProfilePage()));
+                            }).catchError((onError) {
+                              isButtonPressed = false;
+                              setState(() {
+                                error = "erreur mail/mpd";
+                              });
+                            });
+                          }
+                        }
+                        else {
                           isButtonPressed = false;
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => ProfilePage()));
-                        }).catchError((onError) {
-                          isButtonPressed = false;
-                          print('EROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
-                        });
+                          setState(() {
+                            error = "Les mdp ne sont pas pareils";
+                          });
+                        }
                       }
                       else {
                         isButtonPressed = false;
-                        print('EROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
+                        setState(() {
+                          error = "Mettez votre prénom et nom";
+                        });
                       }
                     }
                   },
