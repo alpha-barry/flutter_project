@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modue_flutter_ex2/MessengerPage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
-import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
+import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 
 class ContactsPage extends StatelessWidget {
   @override
@@ -13,7 +13,7 @@ class ContactsPage extends StatelessWidget {
 
         title: Text('Mes Contacts'),
       ),
-      endDrawer: HeaderWidget(context),
+      endDrawer: headerWidget(context),
       body: ContactsPageStateful(),
     );
   }

@@ -7,7 +7,7 @@ import 'package:modue_flutter_ex2/SearchMemberPage.dart';
 
 import '../ContactsPage.dart';
 
-Widget HeaderWidget(BuildContext context){
+Widget headerWidget(BuildContext context){
   return Drawer(
     // Add a ListView to the drawer. This ensures the user can scroll
     // through the options in the drawer if there isn't enough vertical

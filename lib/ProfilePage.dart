@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
-import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
+import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -62,7 +62,7 @@ class ProfilePageState extends State<ProfilePage>{
 
         title: Text('Mon profil'),
       ),
-      endDrawer: HeaderWidget(context),
+      endDrawer: headerWidget(context),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

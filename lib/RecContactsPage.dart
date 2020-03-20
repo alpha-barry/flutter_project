@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
+import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 
 import 'UserInf.dart';
 
@@ -13,7 +13,7 @@ class RecContactsPage extends StatelessWidget {
 
         title: Text('Recherche'),
       ),
-      endDrawer: HeaderWidget(context),
+      endDrawer: headerWidget(context),
       body: RecContactsPageStateful(),
     );
   }

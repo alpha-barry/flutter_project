@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
-import 'package:modue_flutter_ex2/widgets/HeaderWidget.dart';
+import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 
 class MessengerPage extends StatelessWidget {
   @override
@@ -223,7 +223,7 @@ class MessengerPageState extends State<MessengerPageStateful> {
           ],
         ),
       ),
-      endDrawer: HeaderWidget(context),
+      endDrawer: headerWidget(context),
       body: new StreamBuilder<DocumentSnapshot>(
           stream: Firestore.instance.document("chat/" + UserInf.uid + "/conversations/" + UserInf.contactUid).snapshots(),
           builder: (context, snapshot) {
