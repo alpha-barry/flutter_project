@@ -86,6 +86,11 @@ class ProfilePageState extends State<ProfilePage>{
                     ),
                   ),
                   FloatingActionButton(onPressed: getImage, child: Icon(Icons.photo_camera),),
+
+                  Text(UserInf.fullName ?? '', style: new TextStyle(
+                    fontSize: 20.0,
+                    color: Colors.blue,
+                  ),),
                 ],
               ),
             ),

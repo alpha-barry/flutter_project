@@ -11,7 +11,7 @@ class RecContactsPage extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
 
-        title: Text('Recherche'),
+        title: Text('Invitations'),
       ),
       endDrawer: headerWidget(context),
       body: RecContactsPageStateful(),
