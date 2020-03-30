@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
+import 'package:provider/provider.dart';
+
+import 'NightMode.dart';
 // ignore: must_be_immutable
 
 class SignUpPage extends StatefulWidget {
@@ -36,6 +39,7 @@ class SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Inscription"),

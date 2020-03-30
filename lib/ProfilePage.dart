@@ -3,9 +3,11 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:modue_flutter_ex2/NightMode.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -16,6 +18,8 @@ class ProfilePageState extends State<ProfilePage>{
 
   String imgUrl;
   File _image;
+
+  bool isChecked = false;
 
   Future getImage() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
@@ -57,6 +61,7 @@ class ProfilePageState extends State<ProfilePage>{
     // TODO: implement build
 
     return Scaffold(
+      backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
 
@@ -91,6 +96,23 @@ class ProfilePageState extends State<ProfilePage>{
                     fontSize: 20.0,
                     color: Colors.blue,
                   ),),
+
+
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
+                    child: Text("Mode nuit", style: new TextStyle(
+                      color: Colors.blue,
+                    ),),
+                  ),
+                  Checkbox(
+                    value: Provider.of<NightMode>(context, listen: true).switcher,
+                    onChanged: (value) {
+                      Provider.of<NightMode>(context, listen: false).switchMode();
+                      setState(() {
+                        isChecked = value;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
+import 'package:provider/provider.dart';
+
+import 'NightMode.dart';
 
 // ignore: must_be_immutable
 
@@ -25,13 +28,14 @@ class SignInPageState extends State<SignInPage> {
     AuthResult result = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     FirebaseUser user = result.user;
-    UserInf.uid = user.uid;
+    //UserInf.uid = user.uid;
     return user.uid;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text("Connexion"),
@@ -72,27 +76,28 @@ class SignInPageState extends State<SignInPage> {
               Padding(
                 padding: EdgeInsets.all(26.0),
                 child: RaisedButton(
-                  onPressed: () {
-                    if (!isButtonPressed) {
-                      isButtonPressed = true;
-                      Future<String> uid = signIn(email, password);
-                      uid.then((onValue) {
-                        isButtonPressed = false;
-                        Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => ProfilePage()));
-                      }).catchError((onError) {
-                        isButtonPressed = false;
-                        setState(() {
-                          error = "erreur mail/mdp";
-                        });
-                      });
-                    }
-                  },
-                  child: Text(
-                      'Se connecter',
-                      style: TextStyle(fontSize: 20)
-                  ),
-                ),
+                      onPressed: () {
+                        if (!isButtonPressed) {
+                          isButtonPressed = true;
+                          Future<String> uid = signIn(email, password);
+                          uid.then((onValue) {
+                            isButtonPressed = false;
+                            UserInf.uid = onValue;
+                            Navigator.push(context, MaterialPageRoute(
+                                builder: (context) => ProfilePage()));
+                          }).catchError((onError) {
+                            isButtonPressed = false;
+                            setState(() {
+                              error = "erreur mail/mdp";
+                            });
+                          });
+                        }
+                      },
+                      child: Text(
+                          'Se connecter',
+                          style: TextStyle(fontSize: 20)
+                      ),
+                    ),
               ),
             ],
           ),

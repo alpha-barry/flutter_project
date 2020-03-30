@@ -4,6 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
+import 'package:provider/provider.dart';
+
+import 'NightMode.dart';
+
+class Test extends ChangeNotifier {
+  int i = 2;
+
+  void changeValue() {
+    i++;
+    notifyListeners();
+  }
+}
 
 class MessengerPage extends StatelessWidget {
   @override
@@ -196,7 +208,7 @@ class MessengerPageState extends State<MessengerPageStateful> {
                   _textController.clear();
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -206,6 +218,7 @@ class MessengerPageState extends State<MessengerPageStateful> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       appBar: new AppBar(
         title: new Row(
           children: <Widget>[
@@ -227,6 +240,7 @@ class MessengerPageState extends State<MessengerPageStateful> {
       body: new StreamBuilder<DocumentSnapshot>(
           stream: Firestore.instance.document("chat/" + UserInf.uid + "/conversations/" + UserInf.contactUid).snapshots(),
           builder: (context, snapshot) {
+            print("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
             switch (snapshot.connectionState) {
               case ConnectionState.none:
               case ConnectionState.waiting:
