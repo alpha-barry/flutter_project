@@ -38,7 +38,7 @@ class SignInPageState extends State<SignInPage> {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Connexion"),
+        title: Center(child: Text("Connexion")),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -83,8 +83,7 @@ class SignInPageState extends State<SignInPage> {
                           uid.then((onValue) {
                             isButtonPressed = false;
                             UserInf.uid = onValue;
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (context) => ProfilePage()));
+                            Navigator.pushNamed(context, '/profil');
                           }).catchError((onError) {
                             isButtonPressed = false;
                             setState(() {

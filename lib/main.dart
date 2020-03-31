@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:modue_flutter_ex2/ContactsPage.dart';
+import 'package:modue_flutter_ex2/ConvListPage.dart';
 import 'package:modue_flutter_ex2/NightMode.dart';
+import 'package:modue_flutter_ex2/ProfilePage.dart';
+import 'package:modue_flutter_ex2/RecContactsPage.dart';
+import 'package:modue_flutter_ex2/SearchMemberPage.dart';
 import 'package:provider/provider.dart';
 import 'SignInPage.dart';
 import 'SignUpPage.dart';
@@ -19,6 +24,17 @@ class MyApp extends StatelessWidget {
     return ChangeNotifierProvider<NightMode>(
       create: (context) => NightMode(),
       child: MaterialApp(
+        initialRoute: '/',
+        routes: {
+         // '/': (context) => MyHomePage(),
+          '/signup': (context) => SignUpPage(),
+          '/signin': (context) => SignInPage(),
+          '/profil': (context) => ProfilePage(),
+          '/search': (context) => SearchMemberPage(),
+          '/invits': (context) => RecContactsPage(),
+          '/contacts': (context) => ContactsPage(),
+          '/conversations': (context) => ConvListPage(),
+        },
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -48,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
 
-        title: Text(widget.title),
+        title: Center(child: Text(widget.title)),
       ),
       body: Center(
         child: SingleChildScrollView(

@@ -64,8 +64,8 @@ class ProfilePageState extends State<ProfilePage>{
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-
-        title: Text('Mon profil'),
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('Mon profil')),
       ),
       endDrawer: headerWidget(context),
       body: SingleChildScrollView(

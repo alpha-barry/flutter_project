@@ -13,8 +13,8 @@ class RecContactsPage extends StatelessWidget {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-
-        title: Text('Invitations'),
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('Invitations')),
       ),
       endDrawer: headerWidget(context),
       body: RecContactsPageStateful(),

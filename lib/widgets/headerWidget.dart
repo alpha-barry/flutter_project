@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:modue_flutter_ex2/ConvListPage.dart';
@@ -53,8 +54,7 @@ Widget headerWidget(BuildContext context){
           trailing: Icon(Icons.search, color: Colors.blue,),
           title: Text('Mon profil', style: TextStyle(color: Colors.blue),),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => ProfilePage()));
+            Navigator.pushNamed(context, '/profil');
             // Update the state of the app.
             // ...
           },
@@ -63,8 +63,7 @@ Widget headerWidget(BuildContext context){
           trailing: Icon(Icons.search, color: Colors.blue,),
           title: Text('Rechercher', style: TextStyle(color: Colors.blue),),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => SearchMemberPage()));
+            Navigator.pushNamed(context, '/search');
             // Update the state of the app.
             // ...
           },
@@ -75,16 +74,16 @@ Widget headerWidget(BuildContext context){
           onTap: () {
             // Update the state of the app.
             // ...
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => ContactsPage()));
+            Navigator.pushNamed(context, '/contacts');
+
           },
         ),
         ListTile(
           trailing: Icon(Icons.send, color: Colors.blue),
           title: Text('Invitations', style: TextStyle(color: Colors.blue),),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => RecContactsPage()));
+            Navigator.pushNamed(context, '/invits');
+
             // Update the state of the app.
             // ...
           },
@@ -93,8 +92,8 @@ Widget headerWidget(BuildContext context){
           trailing: Icon(Icons.message, color: Colors.blue,),
           title: Text('Mes messages', style: TextStyle(color: Colors.blue),),
           onTap: () {
-            Navigator.push(context, MaterialPageRoute(
-                builder: (context) => ConvListPage()));
+            Navigator.pushNamed(context, '/conversations');
+
             // Update the state of the app.
             // ...
           },
@@ -103,6 +102,8 @@ Widget headerWidget(BuildContext context){
           trailing: Icon(Icons.power_settings_new, color: Colors.blue,),
           title: Text('Déconnexion', style: TextStyle(color: Colors.blue),),
           onTap: () {
+            FirebaseAuth.instance.signOut();
+            Navigator.pushNamed(context, '/');
             // Update the state of the app.
             // ...
           },

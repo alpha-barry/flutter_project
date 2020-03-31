@@ -113,69 +113,75 @@ class MessengerPageState extends State<MessengerPageStateful> {
       );
 
     List contacts = contactsMap["messages"];
+    contacts = contacts.reversed.toList();
 
-    return new Scrollbar (
-        child: ListView.builder(
-            itemCount: contacts.length,
-            itemBuilder: (context, index){
+    return ListView.builder(
+        padding: new EdgeInsets.all(8.0),
+        reverse: true,
+        itemCount: contacts.length,
+        itemBuilder: (context, index){
 
-              if (contacts[index]["uid"] == UserInf.uid) {
-                name = "Moi";
-                colorName = Colors.indigo;
-                color1 = Colors.blueGrey;
-              }
-              else {
-                name = contacts[index]["name"];
-                colorName = Colors.black;
-                color1 = Colors.white;
-              }
+          if (contacts[index]["uid"] == UserInf.uid) {
+            name = "Moi";
+            colorName = Colors.indigo;
+            color1 = Colors.blueGrey;
+          }
+          else {
+            name = contacts[index]["name"];
+            colorName = Colors.black;
+            color1 = Colors.white;
+          }
 
-              DateTime dateTime = contacts[index]["timestamp"].toDate();
-              dateTime = dateTime.toUtc().add(new Duration(hours: 2));
-              String _date = dateFormat.format(dateTime);
+          DateTime dateTime = contacts[index]["timestamp"].toDate();
+          dateTime = dateTime.toUtc().add(new Duration(hours: 2));
+          String _date = dateFormat.format(dateTime);
 
-              return Card(
-                color: color1,
-                child: new Wrap(
-                  // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      ListTile(
-                        title: new Text(name, style: TextStyle(color: colorName),),
-                        trailing: new Text(_date, style: TextStyle(color: Colors.indigo, fontSize: 14,),),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(15),
-                        child: Text(contacts[index]["message"], style: TextStyle(color: Colors.black)),
-                      ),
-                    ]),
-              );
-            }
-        )
+          return Card(
+            color: color1,
+            child: new Wrap(
+              // crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  ListTile(
+                    title: new Text(name, style: TextStyle(color: colorName),),
+                    trailing: new Text(_date, style: TextStyle(color: Colors.indigo, fontSize: 14,),),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    child: Text(contacts[index]["message"], style: TextStyle(color: Colors.black)),
+                  ),
+                ]),
+          );
+        }
     );
   }
 
   void sendMessage(String pathConversation, String message, String myId) {
 
-    Firestore.instance.document(pathConversation).setData({
-      'messages': FieldValue.arrayUnion([
-        {
-          'name': UserInf.fullName,
-          'message': message,
-          'timestamp': DateTime.now(),
-          'uid' : myId,
-          'hasSeen': false
-        }
-      ])
-    }, merge: true);
+    if (message.trim().length > 0) {
+      Firestore.instance.document(pathConversation).setData({
+        'messages': FieldValue.arrayUnion([
+          {
+            'name': UserInf.fullName,
+            'message': message,
+            'timestamp': DateTime.now(),
+            'uid': myId,
+            'hasSeen': false
+          }
+        ])
+      }, merge: true);
 
-    Firestore.instance.document('profiles/' + UserInf.contactUid).get().then((onData){
-      Firestore.instance.document("chat/" + myId + "/conversations/" + UserInf.contactUid).setData({
-        'contactName': UserInf.contactFullName,
-      }, merge: true);
-      Firestore.instance.document("chat/" + UserInf.contactUid + "/conversations/" + myId).setData({
-        'contactName': UserInf.fullName,
-      }, merge: true);
-    });
+      Firestore.instance.document('profiles/' + UserInf.contactUid).get().then((
+          onData) {
+        Firestore.instance.document(
+            "chat/" + myId + "/conversations/" + UserInf.contactUid).setData({
+          'contactName': UserInf.contactFullName,
+        }, merge: true);
+        Firestore.instance.document(
+            "chat/" + UserInf.contactUid + "/conversations/" + myId).setData({
+          'contactName': UserInf.fullName,
+        }, merge: true);
+      });
+    }
   }
 
   Widget _textComposerWidget() {
@@ -220,20 +226,25 @@ class MessengerPageState extends State<MessengerPageStateful> {
     return Scaffold(
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       appBar: new AppBar(
-        title: new Row(
-          children: <Widget>[
-            new CircleAvatar(
-              backgroundImage: NetworkImage(imgUrl),
-            ),
-            Center(
-              child: new Text(
-                UserInf.contactFullName != null
-                    ?  UserInf.contactFullName
-                    : '',
-                style: TextStyle(color: Colors.white),
+        title: Center(
+          child: new Row(
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.all(5.0),
+                child: new CircleAvatar(
+                  backgroundImage: NetworkImage(imgUrl),
+                ),
               ),
-            ),
-          ],
+              Center(
+                child: new Text(
+                  UserInf.contactFullName != null
+                      ?  UserInf.contactFullName
+                      : '',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       endDrawer: headerWidget(context),

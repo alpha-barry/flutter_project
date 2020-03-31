@@ -42,7 +42,7 @@ class SignUpPageState extends State<SignUpPage> {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Text("Inscription"),
+        title: Center(child: Text("Inscription")),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -140,8 +140,7 @@ class SignUpPageState extends State<SignUpPage> {
                               //storageReference.putFile(image);
 
                               isButtonPressed = false;
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => ProfilePage()));
+                              Navigator.pushNamed(context, '/profil');
                             }).catchError((onError) {
                               isButtonPressed = false;
                               setState(() {

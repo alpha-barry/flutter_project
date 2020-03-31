@@ -14,8 +14,8 @@ class ContactsPage extends StatelessWidget {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-
-        title: Text('Mes Contacts'),
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('Mes Contacts')),
       ),
       endDrawer: headerWidget(context),
       body: ContactsPageStateful(),
@@ -37,6 +37,9 @@ class ContactsPageState extends State<ContactsPageStateful> {
     });*/
     Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([contact["uid"]])});
     Firestore.instance.collection("profiles").document(contact["uid"]).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
+
+    Firestore.instance.collection("chat/" +  UserInf.uid + "/conversations").document(contact["uid"]).delete();
+    Firestore.instance.collection("chat/" + contact["uid"] + "/conversations").document(UserInf.uid).delete();
   }
 
   Future<void> removeContactAlertDialog(DocumentSnapshot contact) async {

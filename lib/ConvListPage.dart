@@ -14,8 +14,8 @@ class ConvListPage extends StatelessWidget {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-
-        title: Text('Conversations'),
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('Conversations')),
       ),
       endDrawer: headerWidget(context),
       body: ConvListPageStateful(),

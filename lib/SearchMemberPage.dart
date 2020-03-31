@@ -13,8 +13,8 @@ class SearchMemberPage extends StatelessWidget {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-
-        title: Text('Recherche'),
+        automaticallyImplyLeading: false,
+        title: Center(child: Text('Recherche')),
       ),
       endDrawer: headerWidget(context),
       body: SearchMemberPageStateful(),
@@ -116,6 +116,9 @@ class CustomCard extends State<CustomCardState> {
     });*/
     Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([userUid])});
     Firestore.instance.collection("profiles").document(userUid).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
+
+    Firestore.instance.collection("chat/" +  UserInf.uid + "/conversations").document(userUid).delete();
+    Firestore.instance.collection("chat/" + userUid + "/conversations").document(UserInf.uid).delete();
   }
 
   Future<void> removeContactAlertDialog(String userUid) async {
