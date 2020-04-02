@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:provider/provider.dart';
 
 import 'NightMode.dart';
-// ignore: must_be_immutable
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -121,9 +119,11 @@ class SignUpPageState extends State<SignUpPage> {
                         if (password == confirmPassword) {
                           if (password != null && password.length < 6) {
                             isButtonPressed = false;
-                            setState(() {
-                              error = "Le mdp doit avoir au plus de 5 caractères";
-                            });
+                            if (mounted) {
+                              setState(() {
+                                error = "Le mdp doit avoir au plus de 5 caractères";
+                              });
+                            }
                           }
                           else {
                             Future<String> uid = signUp(email, password);
@@ -143,9 +143,11 @@ class SignUpPageState extends State<SignUpPage> {
                               Navigator.pushNamed(context, '/profil');
                             }).catchError((onError) {
                               isButtonPressed = false;
-                              setState(() {
-                                error = "erreur mail/mpd";
-                              });
+                              if (mounted) {
+                                setState(() {
+                                  error = "erreur mail/mpd";
+                                });
+                              }
                             });
                           }
                         }

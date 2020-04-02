@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modue_flutter_ex2/ContactsPage.dart';
-import 'package:modue_flutter_ex2/ConvListPage.dart';
+import 'package:modue_flutter_ex2/ConversationsListPage.dart';
+import 'package:modue_flutter_ex2/MessengerPage.dart';
 import 'package:modue_flutter_ex2/NightMode.dart';
 import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:modue_flutter_ex2/RecContactsPage.dart';
@@ -13,41 +14,41 @@ import 'SignUpPage.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
 
-    SystemChrome.setPreferredOrientations([
+    SystemChrome.setPreferredOrientations(<DeviceOrientation>[
       DeviceOrientation.portraitUp,
     ]);
 
     return ChangeNotifierProvider<NightMode>(
-      create: (context) => NightMode(),
+      create: (BuildContext context) => NightMode(),
       child: MaterialApp(
         initialRoute: '/',
+        // ignore: always_specify_types
         routes: {
-         // '/': (context) => MyHomePage(),
-          '/signup': (context) => SignUpPage(),
-          '/signin': (context) => SignInPage(),
-          '/profil': (context) => ProfilePage(),
-          '/search': (context) => SearchMemberPage(),
-          '/invits': (context) => RecContactsPage(),
-          '/contacts': (context) => ContactsPage(),
-          '/conversations': (context) => ConvListPage(),
+          '/signup': (BuildContext context) => SignUpPage(),
+          '/signin': (BuildContext context) => SignInPage(),
+          '/profil': (BuildContext context) => ProfilePage(),
+          '/search': (BuildContext context) => SearchMemberPage(),
+          '/invits': (BuildContext context) => RecContactsPage(),
+          '/contacts': (BuildContext context) => ContactsPage(),
+          '/conversations': (BuildContext context) => ConversationsListPage(),
+          '/messenger': (BuildContext context) => MessengerPage(),
         },
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
+        home: const MyHomePage(title: 'Flutter Demo Home Page'),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  const MyHomePage({Key key, this.title}) : super(key: key);
 
   final String title;
 
@@ -72,12 +73,12 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: RaisedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignInPage()));
+                    Navigator.pushNamed(context, '/signin');
                   },
-                  child: Text(
+                  child: const Text(
                       'Connexion',
                       style: TextStyle(fontSize: 20)
                   ),
@@ -85,12 +86,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: RaisedButton(
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+                    Navigator.pushNamed(context, '/signup');
                   },
-                  child: Text(
+                  child: const Text(
                       'Inscription',
                       style: TextStyle(fontSize: 20)
                   ),
@@ -107,32 +108,27 @@ class _MyHomePageState extends State<MyHomePage> {
 class SecondRoute extends StatelessWidget {
   @override
 
-  SecondRoute({Key key, this.email, this.password}) : super(key: key);
+  const SecondRoute({Key key, this.email, this.password}) : super(key: key);
 
   final String email;
   final String password;
 
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Second Route"),
+        title: const Text('Second Route'),
       ),
       body: Center(
         child: Column(
           children: <Widget>[
-            Text("Bonjour " + this.email),
+            Text('Bonjour ' + email),
             RaisedButton(
               onPressed: () {
                 Navigator.pop(context);
-                // Navigate back to first route when tapped.
               },
-              child: Text('Go back!'),
+              child: const Text('Go back!'),
             ),
-            /*Scrollbar(
-                child: Column(
-
-                ),
-            ),*/
           ],
         ),
       ),

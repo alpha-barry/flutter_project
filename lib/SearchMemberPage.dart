@@ -92,21 +92,25 @@ class CustomCard extends State<CustomCardState> {
       List contactsList = onValue.data["contacts"];
       List recContactsList = onValue.data["rec_contacts"];
       List sendContactsList = onValue.data["send_contacts"];
+      if (mounted) {
+        setState(() {
+          if (contactsList != null && contactsList.contains(contact.documentID)) {
+            status = "0";
+          }
+          else if (recContactsList != null &&
+              recContactsList.contains(contact.documentID)) {
+            status = "1";
+          }
+          else if (sendContactsList != null &&
+              sendContactsList.contains(contact.documentID)) {
+            status = "2";
+          }
+          else {
+            status = "3";
+          }
+        });
+      }
 
-      setState(() {
-        if (contactsList != null && contactsList.contains(contact.documentID)) {
-          status = "0";
-        }
-        else if (recContactsList != null && recContactsList.contains(contact.documentID)) {
-          status = "1";
-        }
-        else if (sendContactsList != null && sendContactsList.contains(contact.documentID)) {
-          status = "2";
-        }
-        else {
-          status = "3";
-        }
-      });
     });
   }
 
@@ -255,33 +259,33 @@ class CustomCard extends State<CustomCardState> {
     return Card(
       borderOnForeground: false,
       child: ListTile(
-          leading: Icon(Icons.album, size: 50),
-          title: new Text(contact["firstName"]),
-          subtitle: new Text(contact["lastName"]),
-          trailing: IconButton(
-              icon: Icon(icons.icon, color: Colors.indigoAccent),
-              onPressed: () {
-                if (status == "0") {
-                  removeContactAlertDialog(contact.documentID);
-                }
-                else if (status == "1") {
-                  acceptContactAlertDialog();
-                }
-                else if (status == "2") {
-                  cancelContactAlertDialog();
-                }
-                else if (status == "3"){
-                  Firestore.instance.collection("profiles")
-                      .document(UserInf.uid)
-                      .updateData(
-                      {"send_contacts": FieldValue.arrayUnion([contact.documentID])});
-                  Firestore.instance.collection("profiles")
-                      .document(contact.documentID)
-                      .updateData(
-                      {"rec_contacts": FieldValue.arrayUnion([UserInf.uid])});
-                }
+        leading: Icon(Icons.album, size: 50),
+        title: new Text(contact["firstName"]),
+        subtitle: new Text(contact["lastName"]),
+        trailing: IconButton(
+            icon: Icon(icons.icon, color: Colors.indigoAccent),
+            onPressed: () {
+              if (status == "0") {
+                removeContactAlertDialog(contact.documentID);
               }
-          ),
+              else if (status == "1") {
+                acceptContactAlertDialog();
+              }
+              else if (status == "2") {
+                cancelContactAlertDialog();
+              }
+              else if (status == "3"){
+                Firestore.instance.collection("profiles")
+                    .document(UserInf.uid)
+                    .updateData(
+                    {"send_contacts": FieldValue.arrayUnion([contact.documentID])});
+                Firestore.instance.collection("profiles")
+                    .document(contact.documentID)
+                    .updateData(
+                    {"rec_contacts": FieldValue.arrayUnion([UserInf.uid])});
+              }
+            }
+        ),
 
       ),
     );

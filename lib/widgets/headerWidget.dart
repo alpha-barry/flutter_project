@@ -1,20 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:modue_flutter_ex2/ConvListPage.dart';
-import 'package:modue_flutter_ex2/ProfilePage.dart';
-import 'package:modue_flutter_ex2/RecContactsPage.dart';
-import 'package:modue_flutter_ex2/SearchMemberPage.dart';
-
-import '../ContactsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Widget headerWidget(BuildContext context){
   return Drawer(
-    // Add a ListView to the drawer. This ensures the user can scroll
-    // through the options in the drawer if there isn't enough vertical
-    // space to fit everything.
+
     child: ListView(
-      // Important: Remove any padding from the ListView.
       padding: EdgeInsets.zero,
       children: <Widget>[
         DrawerHeader(
@@ -22,10 +14,10 @@ Widget headerWidget(BuildContext context){
             child: Column(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "MENU",
-                    style: new TextStyle(
+                    'MENU',
+                    style: TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
                     ),
@@ -33,10 +25,10 @@ Widget headerWidget(BuildContext context){
                 ),
 
                 Padding(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    "Menu",
-                    style: new TextStyle(
+                    'Menu',
+                    style: TextStyle(
                       fontSize: 20.0,
                       color: Colors.white,
                     ),
@@ -55,8 +47,6 @@ Widget headerWidget(BuildContext context){
           title: Text('Mon profil', style: TextStyle(color: Colors.blue),),
           onTap: () {
             Navigator.pushNamed(context, '/profil');
-            // Update the state of the app.
-            // ...
           },
         ),
         ListTile(
@@ -64,18 +54,13 @@ Widget headerWidget(BuildContext context){
           title: Text('Rechercher', style: TextStyle(color: Colors.blue),),
           onTap: () {
             Navigator.pushNamed(context, '/search');
-            // Update the state of the app.
-            // ...
           },
         ),
         ListTile(
           trailing: Icon(Icons.contacts, color: Colors.blue,),
           title: Text('Contacts', style: TextStyle(color: Colors.blue),),
           onTap: () {
-            // Update the state of the app.
-            // ...
             Navigator.pushNamed(context, '/contacts');
-
           },
         ),
         ListTile(
@@ -83,9 +68,6 @@ Widget headerWidget(BuildContext context){
           title: Text('Invitations', style: TextStyle(color: Colors.blue),),
           onTap: () {
             Navigator.pushNamed(context, '/invits');
-
-            // Update the state of the app.
-            // ...
           },
         ),
         ListTile(
@@ -93,9 +75,6 @@ Widget headerWidget(BuildContext context){
           title: Text('Mes messages', style: TextStyle(color: Colors.blue),),
           onTap: () {
             Navigator.pushNamed(context, '/conversations');
-
-            // Update the state of the app.
-            // ...
           },
         ),
         ListTile(
@@ -103,9 +82,10 @@ Widget headerWidget(BuildContext context){
           title: Text('Déconnexion', style: TextStyle(color: Colors.blue),),
           onTap: () {
             FirebaseAuth.instance.signOut();
+            SharedPreferences.getInstance().then((SharedPreferences onValue){
+              onValue.clear();
+            });
             Navigator.pushNamed(context, '/');
-            // Update the state of the app.
-            // ...
           },
         ),
       ],

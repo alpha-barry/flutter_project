@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:modue_flutter_ex2/ProfilePage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'NightMode.dart';
 
@@ -18,6 +18,7 @@ class SignInPage extends StatefulWidget {
 }
 
 class SignInPageState extends State<SignInPage> {
+  static SharedPreferences prefs;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   String email;
   String password;
@@ -30,6 +31,40 @@ class SignInPageState extends State<SignInPage> {
     FirebaseUser user = result.user;
     //UserInf.uid = user.uid;
     return user.uid;
+  }
+
+  void getSaveUser() async {
+    prefs = await SharedPreferences.getInstance();
+    email = prefs.getString('email');
+    password = prefs.getString('pwd');
+    if (email != null && password != null) {
+      connect();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSaveUser();
+  }
+
+  void connect(){
+    Future<String> uid = signIn(email, password);
+    uid.then((onValue) {
+      isButtonPressed = false;
+      prefs.setString('email', email);
+      prefs.setString('pwd', password);
+      UserInf.uid = onValue;
+      Navigator.pushNamed(context, '/profil');
+    }).catchError((onError) {
+      isButtonPressed = false;
+      if (mounted) {
+        setState(() {
+          error = "erreur mail/mdp";
+        });
+      }
+    });
   }
 
   @override
@@ -76,27 +111,17 @@ class SignInPageState extends State<SignInPage> {
               Padding(
                 padding: EdgeInsets.all(26.0),
                 child: RaisedButton(
-                      onPressed: () {
-                        if (!isButtonPressed) {
-                          isButtonPressed = true;
-                          Future<String> uid = signIn(email, password);
-                          uid.then((onValue) {
-                            isButtonPressed = false;
-                            UserInf.uid = onValue;
-                            Navigator.pushNamed(context, '/profil');
-                          }).catchError((onError) {
-                            isButtonPressed = false;
-                            setState(() {
-                              error = "erreur mail/mdp";
-                            });
-                          });
-                        }
-                      },
-                      child: Text(
-                          'Se connecter',
-                          style: TextStyle(fontSize: 20)
-                      ),
-                    ),
+                  onPressed: () {
+                    if (!isButtonPressed) {
+                      isButtonPressed = true;
+                      connect();
+                    }
+                  },
+                  child: Text(
+                      'Se connecter',
+                      style: TextStyle(fontSize: 20)
+                  ),
+                ),
               ),
             ],
           ),

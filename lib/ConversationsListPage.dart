@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:modue_flutter_ex2/MessengerPage.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:provider/provider.dart';
 
 import 'NightMode.dart';
 
-class ConvListPage extends StatelessWidget {
+class ConversationsListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,44 +14,44 @@ class ConvListPage extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Conversations')),
+        title: const Center(child: Text('Conversations')),
       ),
       endDrawer: headerWidget(context),
-      body: ConvListPageStateful(),
+      body: ConversationsListPageStateful(),
     );
   }
 }
 
 
-class ConvListPageStateful extends StatefulWidget {
+class ConversationsListPageStateful extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => ConvListPageState();
+  State<StatefulWidget> createState() => ConversationsListPageState();
 }
 
-class ConvListPageState extends State<ConvListPageStateful> {
+class ConversationsListPageState extends State<ConversationsListPageStateful> {
 
 
   Widget conversationList(QuerySnapshot contacts){
-    return new Scrollbar (
+    return Scrollbar (
         child: ListView.builder(
             itemCount: contacts.documents.length,
-            itemBuilder: (context, index){
-              List list = contacts.documents.elementAt(index).data["messages"];
+            itemBuilder: (BuildContext context, int index){
+              final List<dynamic> list = contacts.documents.elementAt(index).data['messages'];
               return Card(
                 child: ListTile(
-                  title: Text(contacts.documents.elementAt(index).data["contactName"] ?? ''),
-                  subtitle: Text(list?.last["message"] ?? ''),
-                  leading: CircleAvatar(child: Text(list?.last["name"][0] ?? '')),
+                  title: Text(contacts.documents.elementAt(index).data['contactName'] ?? ''),
+                  subtitle: Text(list?.last['message'] ?? ''),
+                  leading: CircleAvatar(child: Text(list?.last['name'][0] ?? '')),
                   onTap: () {
                     UserInf.contactUid = contacts.documents.elementAt(index).documentID;
-                    Navigator.push(context, MaterialPageRoute(
-                        builder: (context) => MessengerPage()));
+                    Navigator.pushNamed(context, '/messenger');
+
                   },
                   trailing: IconButton(
                       icon: Icon(Icons.delete, color: Colors.indigo,),
                       onPressed: () {
-                        Firestore.instance.collection("chat/" +  UserInf.uid + "/conversations").document(contacts.documents.elementAt(index).documentID).delete();
-                        Firestore.instance.collection("chat/" + contacts.documents.elementAt(index).documentID + "/conversations").document(UserInf.uid).delete();
+                        Firestore.instance.collection('chat/' +  UserInf.uid + '/conversations').document(contacts.documents.elementAt(index).documentID).delete();
+                        Firestore.instance.collection('chat/' + contacts.documents.elementAt(index).documentID + '/conversations').document(UserInf.uid).delete();
                       }),
                 ),
               );
@@ -62,26 +61,26 @@ class ConvListPageState extends State<ConvListPageStateful> {
   }
 
   @override
-  Widget build(BuildContext ctextontext) {
+  Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection("chat/" + UserInf.uid + "/conversations").snapshots(),
-      builder: (context, snapshot) {
+      stream: Firestore.instance.collection('chat/' + UserInf.uid + '/conversations').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
             return Center(child: CircularProgressIndicator(backgroundColor: Colors.deepPurple));
             break;
           case ConnectionState.active:
-            if (snapshot.data.documents.length != 0)
+            if (snapshot.data.documents.isNotEmpty)
               return conversationList(snapshot.data);
             else
-              return Center(child: Text("Aucune conversation"));
+              return const Center(child: Text('Aucune conversation'));
             break;
           case ConnectionState.done:
-            return Text("DONE");
+            return const Text('DONE');
             break;
           default:
-            return Text('Erreur');
+            return const Text('Erreur');
         }
       },
     );

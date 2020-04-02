@@ -27,9 +27,11 @@ class ProfilePageState extends State<ProfilePage>{
     final StorageReference storageReference = FirebaseStorage().ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
     storageReference.putFile(image).onComplete.then((onValue) {
       onValue.ref.getDownloadURL().then((onValue){
-        setState(() {
-          imgUrl = onValue;
-        });
+        if (mounted) {
+          setState(() {
+            imgUrl = onValue;
+          });
+        }
       });
     });
   }
@@ -49,10 +51,12 @@ class ProfilePageState extends State<ProfilePage>{
     final StorageReference storageReference = FirebaseStorage.instance
         .ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
     storageReference.getDownloadURL().then((onValue) {
-      setState(() {
-        if (onValue != null)
-          imgUrl = onValue;
-      });
+      if (mounted) {
+        setState(() {
+          if (onValue != null)
+            imgUrl = onValue;
+        });
+      }
     });
   }
 
@@ -108,9 +112,11 @@ class ProfilePageState extends State<ProfilePage>{
                     value: Provider.of<NightMode>(context, listen: true).switcher,
                     onChanged: (value) {
                       Provider.of<NightMode>(context, listen: false).switchMode();
-                      setState(() {
-                        isChecked = value;
-                      });
+                      if (mounted) {
+                        setState(() {
+                          isChecked = value;
+                        });
+                      }
                     },
                   ),
                 ],
