@@ -21,11 +21,13 @@ class ProfilePageState extends State<ProfilePage>{
 
   bool isChecked = false;
 
+  // ignore: always_specify_types
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    final File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
-    final StorageReference storageReference = FirebaseStorage().ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
-    storageReference.putFile(image).onComplete.then((onValue) {
+    final StorageReference storageReference = FirebaseStorage().ref().child('profiles/' + UserInf.uid + '/photo_de_profile');
+    storageReference.putFile(image).onComplete.then((StorageTaskSnapshot onValue) {
+      // ignore: always_specify_types
       onValue.ref.getDownloadURL().then((onValue){
         if (mounted) {
           setState(() {
@@ -38,18 +40,19 @@ class ProfilePageState extends State<ProfilePage>{
 
   @override
   void initState() {
+    // ignore: flutter_style_todos
     // TODO: implement initState
     super.initState();
 
 
-    imgUrl = "https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34";
+    imgUrl = 'https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34';
 
-    Firestore.instance.document('profiles/' + UserInf.uid).snapshots().listen((onData){
-      UserInf.fullName = onData.data['firstName'] + " " + onData.data["lastName"];
+    Firestore.instance.document('profiles/' + UserInf.uid).snapshots().listen((DocumentSnapshot onData){
+      UserInf.fullName = onData.data['firstName'] + ' ' + onData.data['lastName'];
     });
 
     final StorageReference storageReference = FirebaseStorage.instance
-        .ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
+        .ref().child('profiles/' + UserInf.uid + '/photo_de_profile');
     storageReference.getDownloadURL().then((onValue) {
       if (mounted) {
         setState(() {
@@ -62,6 +65,7 @@ class ProfilePageState extends State<ProfilePage>{
 
   @override
   Widget build(BuildContext context) {
+    // ignore: flutter_style_todos
     // TODO: implement build
 
     return Scaffold(
@@ -69,7 +73,7 @@ class ProfilePageState extends State<ProfilePage>{
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Mon profil')),
+        title: const Center(child: Text('Mon profil')),
       ),
       endDrawer: headerWidget(context),
       body: SingleChildScrollView(
@@ -89,14 +93,14 @@ class ProfilePageState extends State<ProfilePage>{
                                     ? Image.file(_image).image
                                     : NetworkImage(imgUrl),
                                 fit: BoxFit.cover),
-                            borderRadius: BorderRadius.all(Radius.circular(45.0)),
+                            borderRadius: const BorderRadius.all(Radius.circular(45.0)),
                         ),
                       ),
                     ),
                   ),
                   FloatingActionButton(onPressed: getImage, child: Icon(Icons.photo_camera),),
 
-                  Text(UserInf.fullName ?? '', style: new TextStyle(
+                  Text(UserInf.fullName ?? '', style: TextStyle(
                     fontSize: 20.0,
                     color: Colors.blue,
                   ),),
@@ -104,13 +108,13 @@ class ProfilePageState extends State<ProfilePage>{
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 50, 0, 0),
-                    child: Text("Mode nuit", style: new TextStyle(
+                    child: Text('Mode nuit', style: TextStyle(
                       color: Colors.blue,
                     ),),
                   ),
                   Checkbox(
                     value: Provider.of<NightMode>(context, listen: true).switcher,
-                    onChanged: (value) {
+                    onChanged: (bool value) {
                       Provider.of<NightMode>(context, listen: false).switchMode();
                       if (mounted) {
                         setState(() {

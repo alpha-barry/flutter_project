@@ -9,6 +9,7 @@ import 'NightMode.dart';
 class SignUpPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
+    // ignore: flutter_style_todos
     // TODO: implement createState
     return SignUpPageState();
   }
@@ -24,12 +25,12 @@ class SignUpPageState extends State<SignUpPage> {
   String confirmPassword;
   bool isButtonPressed = false;
 
-  String error = "";
+  String error = '';
 
   Future<String> signUp(String email, String password) async {
-    AuthResult result = await _auth.createUserWithEmailAndPassword(
+    final AuthResult result = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
-    FirebaseUser user = result.user;
+    final FirebaseUser user = result.user;
     UserInf.uid = user.uid;
     return user.uid;
   }
@@ -40,7 +41,7 @@ class SignUpPageState extends State<SignUpPage> {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Center(child: Text("Inscription")),
+        title: const Center(child: Text('Inscription')),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -49,10 +50,10 @@ class SignUpPageState extends State<SignUpPage> {
             children: <Widget>[
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: TextField(
                   onChanged: (String text) => firstName = text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'prenom',
                   ),
@@ -60,10 +61,10 @@ class SignUpPageState extends State<SignUpPage> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: TextField(
                   onChanged: (String text) => lastName = text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'nom',
                   ),
@@ -71,10 +72,10 @@ class SignUpPageState extends State<SignUpPage> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: TextField(
                   onChanged: (String text) => email = text,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'email',
                   ),
@@ -82,11 +83,11 @@ class SignUpPageState extends State<SignUpPage> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child:  TextField(
                   onChanged: (String text) => password = text,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Mdp',
                   ),
@@ -94,11 +95,11 @@ class SignUpPageState extends State<SignUpPage> {
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child:  TextField(
                   onChanged: (String text) => confirmPassword = text,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Entrer le mdp à nouveau',
                   ),
@@ -107,27 +108,27 @@ class SignUpPageState extends State<SignUpPage> {
 
               Text(
                   error,
-                  style: TextStyle(fontSize: 20)
+                  style: const TextStyle(fontSize: 20)
               ),
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child:  RaisedButton(
                   onPressed: () {
                     if (!isButtonPressed) {
                       isButtonPressed = true;
-                      if (firstName != null && lastName != null && firstName.trim().length > 0 && lastName.trim().length > 0) {
+                      if (firstName != null && lastName != null && firstName.trim().isNotEmpty && lastName.trim().isNotEmpty) {
                         if (password == confirmPassword) {
                           if (password != null && password.length < 6) {
                             isButtonPressed = false;
                             if (mounted) {
                               setState(() {
-                                error = "Le mdp doit avoir au plus de 5 caractères";
+                                error = 'Le mdp doit avoir au plus de 5 caractères';
                               });
                             }
                           }
                           else {
-                            Future<String> uid = signUp(email, password);
-                            uid.then((onValue) {
+                            final Future<String> uid = signUp(email, password);
+                            uid.then((String onValue) {
                               Firestore.instance.collection('profiles').document(
                                   onValue)
                                   .setData({
@@ -145,7 +146,7 @@ class SignUpPageState extends State<SignUpPage> {
                               isButtonPressed = false;
                               if (mounted) {
                                 setState(() {
-                                  error = "erreur mail/mpd";
+                                  error = 'erreur mail/mpd';
                                 });
                               }
                             });
@@ -154,19 +155,19 @@ class SignUpPageState extends State<SignUpPage> {
                         else {
                           isButtonPressed = false;
                           setState(() {
-                            error = "Les mdp ne sont pas pareils";
+                            error = 'Les mdp ne sont pas pareils';
                           });
                         }
                       }
                       else {
                         isButtonPressed = false;
                         setState(() {
-                          error = "Mettez votre prénom et nom";
+                          error = 'Mettez votre prénom et nom';
                         });
                       }
                     }
                   },
-                  child: Text(
+                  child: const Text(
                       "S'inscrire",
                       style: TextStyle(fontSize: 20)
                   ),

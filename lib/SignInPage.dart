@@ -11,6 +11,7 @@ import 'NightMode.dart';
 class SignInPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
+    // ignore: flutter_style_todos
     // TODO: implement createState
     return SignInPageState();
   }
@@ -23,16 +24,17 @@ class SignInPageState extends State<SignInPage> {
   String email;
   String password;
   bool isButtonPressed = false;
-  String error = "";
+  String error = '';
 
   Future<String> signIn(String email, String password) async {
-    AuthResult result = await _auth.signInWithEmailAndPassword(
+    final AuthResult result = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
-    FirebaseUser user = result.user;
+    final FirebaseUser user = result.user;
     //UserInf.uid = user.uid;
     return user.uid;
   }
 
+  // ignore: avoid_void_async
   void getSaveUser() async {
     prefs = await SharedPreferences.getInstance();
     email = prefs.getString('email');
@@ -44,14 +46,15 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   void initState() {
+    // ignore: flutter_style_todos
     // TODO: implement initState
     super.initState();
     getSaveUser();
   }
 
   void connect(){
-    Future<String> uid = signIn(email, password);
-    uid.then((onValue) {
+    final Future<String> uid = signIn(email, password);
+    uid.then((String onValue) {
       isButtonPressed = false;
       prefs.setString('email', email);
       prefs.setString('pwd', password);
@@ -61,7 +64,7 @@ class SignInPageState extends State<SignInPage> {
       isButtonPressed = false;
       if (mounted) {
         setState(() {
-          error = "erreur mail/mdp";
+          error = 'erreur mail/mdp';
         });
       }
     });
@@ -73,7 +76,7 @@ class SignInPageState extends State<SignInPage> {
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
-        title: Center(child: Text("Connexion")),
+        title: const Center(child: Text('Connexion')),
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -81,22 +84,22 @@ class SignInPageState extends State<SignInPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: TextField(
                   onChanged: (String text) => email = text,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
+                  decoration: const InputDecoration(
+                    border: const OutlineInputBorder(),
                     labelText: 'email',
                   ),
                 ),
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: TextField(
                   onChanged: (String text) => password = text,
                   obscureText: true,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Password',
                   ),
@@ -105,11 +108,11 @@ class SignInPageState extends State<SignInPage> {
 
               Text(
                   error,
-                  style: TextStyle(fontSize: 20)
+                  style: const TextStyle(fontSize: 20)
               ),
 
               Padding(
-                padding: EdgeInsets.all(26.0),
+                padding: const EdgeInsets.all(26.0),
                 child: RaisedButton(
                   onPressed: () {
                     if (!isButtonPressed) {
@@ -117,7 +120,7 @@ class SignInPageState extends State<SignInPage> {
                       connect();
                     }
                   },
-                  child: Text(
+                  child: const Text(
                       'Se connecter',
                       style: TextStyle(fontSize: 20)
                   ),

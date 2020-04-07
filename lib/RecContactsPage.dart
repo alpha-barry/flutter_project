@@ -14,7 +14,7 @@ class RecContactsPage extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Invitations')),
+        title: const Center(child: Text('Invitations')),
       ),
       endDrawer: headerWidget(context),
       body: RecContactsPageStateful(),
@@ -30,17 +30,19 @@ class RecContactsPageStateful extends StatefulWidget {
 
 class RecContactsPageState extends State<RecContactsPageStateful> {
   void  acceptContact(DocumentSnapshot contact){
-    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact["uid"]])}).then((onValue){
-      Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayUnion([contact["uid"]])});
+    // ignore: always_specify_types
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact['uid']])}).then((onValue){
+      Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayUnion([contact['uid']])});
     });
-    Firestore.instance.collection("profiles").document(contact["uid"]).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
-      Firestore.instance.collection("profiles").document(contact["uid"]).updateData({"contacts": FieldValue.arrayUnion([UserInf.uid])});
+    // ignore: always_specify_types
+    Firestore.instance.collection('profiles').document(contact['uid']).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
+      Firestore.instance.collection('profiles').document(contact['uid']).updateData({'contacts': FieldValue.arrayUnion([UserInf.uid])});
     });
   }
 
   void  removeContact(DocumentSnapshot contact){
-    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact["uid"]])});
-    Firestore.instance.collection("profiles").document(contact["uid"]).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact["uid"]])});
+    Firestore.instance.collection('profiles').document(contact['uid']).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])});
   }
 
   Future<void> removeContactAlertDialog(DocumentSnapshot contact) async {
@@ -49,24 +51,24 @@ class RecContactsPageState extends State<RecContactsPageStateful> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Ajout de contact'),
+          title: const Text('Ajout de contact'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Voulez vous ajouter ' + contact["firstName"] + " " + contact["lastName"] + " à vos contacts ?"),
+                Text('Voulez vous ajouter ' + contact['firstName'] + ' ' + contact['lastName'] + ' à vos contacts ?'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Accepter'),
+              child: const Text('Accepter'),
               onPressed: () {
                 acceptContact(contact);
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Refuser'),
+              child: const Text('Refuser'),
               onPressed: () {
                 removeContact(contact);
                 Navigator.of(context).pop();
@@ -79,16 +81,16 @@ class RecContactsPageState extends State<RecContactsPageStateful> {
   }
 
   Widget _contactsList(QuerySnapshot contacts) {
-    return new Scrollbar (
+    return Scrollbar (
         child: ListView.builder(
             itemCount: contacts.documents.length,
-            itemBuilder: (context, index){
+            itemBuilder: (BuildContext context, int index){
               return Card(
                 borderOnForeground: false,
                 child: ListTile(
                   leading: Icon(Icons.album, size: 50),
-                  title: new Text(contacts.documents.elementAt(index)["firstName"]),
-                  subtitle: new Text(contacts.documents.elementAt(index)["lastName"]),
+                  title:  Text(contacts.documents.elementAt(index)['firstName']),
+                  subtitle: Text(contacts.documents.elementAt(index)['lastName']),
                   trailing: IconButton(
                       icon: Icon(Icons.more_vert, color: Colors.indigo,),
                       onPressed: () =>
@@ -103,9 +105,9 @@ class RecContactsPageState extends State<RecContactsPageStateful> {
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("profiles").where("send_contacts", arrayContains: UserInf.uid).snapshots(),
-        builder: (context, snapshot) {
+    return  StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('profiles').where('send_contacts', arrayContains: UserInf.uid).snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
@@ -115,10 +117,10 @@ class RecContactsPageState extends State<RecContactsPageStateful> {
               return _contactsList(snapshot.data);
               break;
             case ConnectionState.done:
-              return Text("DONE");
+              return const Text('DONE');
               break;
             default:
-              return Text('Erreur');
+              return const Text('Erreur');
           }
         }
     );

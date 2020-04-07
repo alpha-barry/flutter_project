@@ -14,7 +14,7 @@ class SearchMemberPage extends StatelessWidget {
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Center(child: Text('Recherche')),
+        title: const Center(child: Text('Recherche')),
       ),
       endDrawer: headerWidget(context),
       body: SearchMemberPageStateful(),
@@ -31,10 +31,10 @@ class SearchMemberPageStateful extends StatefulWidget {
 class SearchMemberPageState extends State<SearchMemberPageStateful> {
 
   Widget _membersList(QuerySnapshot contacts){
-    return new Scrollbar (
+    return Scrollbar (
         child: ListView.builder(
             itemCount: contacts.documents.length,
-            itemBuilder: (context, index){
+            itemBuilder: (BuildContext context, int index){
               return CustomCardState(contacts.documents.elementAt(index));
             }
         )
@@ -43,9 +43,9 @@ class SearchMemberPageState extends State<SearchMemberPageStateful> {
 
   @override
   Widget build(BuildContext context) {
-    return new StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection("profiles").snapshots(),
-        builder: (context, snapshot) {
+    return  StreamBuilder<QuerySnapshot>(
+        stream: Firestore.instance.collection('profiles').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           switch (snapshot.connectionState) {
             case ConnectionState.none:
             case ConnectionState.waiting:
@@ -55,10 +55,10 @@ class SearchMemberPageState extends State<SearchMemberPageStateful> {
               return _membersList(snapshot.data);
               break;
             case ConnectionState.done:
-              return Text("DONE");
+              return const Text('DONE');
               break;
             default:
-              return Text('Erreur');
+              return const Text('Erreur');
           }
         }
     );
@@ -67,46 +67,52 @@ class SearchMemberPageState extends State<SearchMemberPageStateful> {
 
 class CustomCardState extends StatefulWidget {
   final DocumentSnapshot document;
+  // ignore: sort_constructors_first, prefer_const_constructors_in_immutables
   CustomCardState(this.document);
 
   @override
   State<StatefulWidget> createState() {
+    // ignore: flutter_style_todos
     // TODO: implement createState
-    return new CustomCard(this.document);
+    return CustomCard(document);
   }
 }
 
 class CustomCard extends State<CustomCardState> {
   final DocumentSnapshot contact;
 
+  // ignore: sort_constructors_first
   CustomCard(this.contact);
 
-  String status = "4";
-  Icon icons = new Icon(Icons.refresh);
+  String status = '4';
+  Icon icons = Icon(Icons.refresh);
 
   @override
   void initState() {
     super.initState();
 
-    Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().listen((onValue){
-      List contactsList = onValue.data["contacts"];
-      List recContactsList = onValue.data["rec_contacts"];
-      List sendContactsList = onValue.data["send_contacts"];
+    Firestore.instance.collection('profiles').document(UserInf.uid).snapshots().listen((DocumentSnapshot onValue){
+      // ignore: always_specify_types
+      final List contactsList = onValue.data['contacts'];
+      // ignore: always_specify_types
+      final List recContactsList = onValue.data['rec_contacts'];
+      // ignore: always_specify_types
+      final List sendContactsList = onValue.data['send_contacts'];
       if (mounted) {
         setState(() {
           if (contactsList != null && contactsList.contains(contact.documentID)) {
-            status = "0";
+            status = '0';
           }
           else if (recContactsList != null &&
               recContactsList.contains(contact.documentID)) {
-            status = "1";
+            status = '1';
           }
           else if (sendContactsList != null &&
               sendContactsList.contains(contact.documentID)) {
-            status = "2";
+            status = '2';
           }
           else {
-            status = "3";
+            status = '3';
           }
         });
       }
@@ -118,11 +124,11 @@ class CustomCard extends State<CustomCardState> {
     /*Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().map((convert){
       List list = convert.data[];
     });*/
-    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayRemove([userUid])});
-    Firestore.instance.collection("profiles").document(userUid).updateData({"contacts": FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayRemove([userUid])});
+    Firestore.instance.collection('profiles').document(userUid).updateData({'contacts': FieldValue.arrayRemove([UserInf.uid])});
 
-    Firestore.instance.collection("chat/" +  UserInf.uid + "/conversations").document(userUid).delete();
-    Firestore.instance.collection("chat/" + userUid + "/conversations").document(UserInf.uid).delete();
+    Firestore.instance.collection('chat/' +  UserInf.uid + '/conversations').document(userUid).delete();
+    Firestore.instance.collection('chat/' + userUid + '/conversations').document(UserInf.uid).delete();
   }
 
   Future<void> removeContactAlertDialog(String userUid) async {
@@ -131,24 +137,24 @@ class CustomCard extends State<CustomCardState> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Suppression de contact'),
+          title: const Text('Suppression de contact'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Voulez vous supprimer ' + contact["firstName"] + " " + contact["lastName"] + " de vos contacts ?"),
+                Text('Voulez vous supprimer ' + contact['firstName'] + ' ' + contact['lastName'] + ' de vos contacts ?'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Oui'),
+              child: const Text('Oui'),
               onPressed: () {
                 removeContact(contact.documentID);
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Non'),
+              child: const Text('Non'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -165,25 +171,25 @@ class CustomCard extends State<CustomCardState> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Ajout de contact'),
+          title: const Text('Ajout de contact'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text("Voulez vous annuler l'invitation avec " + contact["firstName"] + " " + contact["lastName"] + " ?"),
+                Text("Voulez vous annuler l'invitation avec " + contact['firstName'] + ' ' + contact['lastName'] + ' ?'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Oui'),
+              child: const Text('Oui'),
               onPressed: () {
-                Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"send_contacts": FieldValue.arrayRemove([contact.documentID])});
-                Firestore.instance.collection("profiles").document(contact.documentID).updateData({"rec_contacts": FieldValue.arrayRemove([UserInf.uid])});
+                Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'send_contacts': FieldValue.arrayRemove([contact.documentID])});
+                Firestore.instance.collection('profiles').document(contact.documentID).updateData({'rec_contacts': FieldValue.arrayRemove([UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Non'),
+              child: const Text('Non'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -195,11 +201,13 @@ class CustomCard extends State<CustomCardState> {
   }
 
   void  acceptContact(){
-    Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact.documentID])}).then((onValue){
-      Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"contacts": FieldValue.arrayUnion([contact.documentID])});
+    // ignore: always_specify_types
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact.documentID])}).then((onValue){
+      Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayUnion([contact.documentID])});
     });
-    Firestore.instance.collection("profiles").document(contact.documentID).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
-      Firestore.instance.collection("profiles").document(contact.documentID).updateData({"contacts": FieldValue.arrayUnion([UserInf.uid])});
+    // ignore: always_specify_types
+    Firestore.instance.collection('profiles').document(contact.documentID).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
+      Firestore.instance.collection('profiles').document(contact.documentID).updateData({'contacts': FieldValue.arrayUnion([UserInf.uid])});
     });
   }
 
@@ -209,27 +217,27 @@ class CustomCard extends State<CustomCardState> {
       barrierDismissible: true, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Ajout de contact'),
+          title: const Text('Ajout de contact'),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Voulez vous ajouter ' + contact["firstName"] + " " + contact["lastName"] + " à vos contacts ?"),
+                Text('Voulez vous ajouter ' + contact['firstName'] + ' ' + contact['lastName'] + ' à vos contacts ?'),
               ],
             ),
           ),
           actions: <Widget>[
             FlatButton(
-              child: Text('Accepter'),
+              child: const Text('Accepter'),
               onPressed: () {
                 acceptContact();
                 Navigator.of(context).pop();
               },
             ),
             FlatButton(
-              child: Text('Refuser'),
+              child: const Text('Refuser'),
               onPressed: () {
-                Firestore.instance.collection("profiles").document(UserInf.uid).updateData({"rec_contacts": FieldValue.arrayRemove([contact.documentID])});
-                Firestore.instance.collection("profiles").document(contact.documentID).updateData({"send_contacts": FieldValue.arrayRemove([UserInf.uid])});
+                Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact.documentID])});
+                Firestore.instance.collection('profiles').document(contact.documentID).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
@@ -242,47 +250,48 @@ class CustomCard extends State<CustomCardState> {
   @override
   Widget build(BuildContext context) {
 
-    if (status == "0") {
-      icons = new Icon(Icons.contacts);
+    if (status == '0') {
+      icons = Icon(Icons.contacts);
     }
-    else if (status == "1") {
-      icons = new Icon(Icons.undo);
+    else if (status == '1') {
+      icons = Icon(Icons.undo);
     }
-    else if (status == "2") {
-      icons = new Icon(Icons.send);
+    else if (status == '2') {
+      icons = Icon(Icons.send);
     }
-    else if (status == "3"){
-      icons = new Icon(Icons.add);
+    else if (status == '3'){
+      icons = Icon(Icons.add);
     }
 
+    // ignore: flutter_style_todos
     // TODO: implement build
     return Card(
       borderOnForeground: false,
       child: ListTile(
         leading: Icon(Icons.album, size: 50),
-        title: new Text(contact["firstName"]),
-        subtitle: new Text(contact["lastName"]),
+        title: Text(contact['firstName']),
+        subtitle: Text(contact['lastName']),
         trailing: IconButton(
             icon: Icon(icons.icon, color: Colors.indigoAccent),
             onPressed: () {
-              if (status == "0") {
+              if (status == '0') {
                 removeContactAlertDialog(contact.documentID);
               }
-              else if (status == "1") {
+              else if (status == '1') {
                 acceptContactAlertDialog();
               }
-              else if (status == "2") {
+              else if (status == '2') {
                 cancelContactAlertDialog();
               }
-              else if (status == "3"){
-                Firestore.instance.collection("profiles")
+              else if (status == '3'){
+                Firestore.instance.collection('profiles')
                     .document(UserInf.uid)
                     .updateData(
-                    {"send_contacts": FieldValue.arrayUnion([contact.documentID])});
-                Firestore.instance.collection("profiles")
+                    {'send_contacts': FieldValue.arrayUnion([contact.documentID])});
+                Firestore.instance.collection('profiles')
                     .document(contact.documentID)
                     .updateData(
-                    {"rec_contacts": FieldValue.arrayUnion([UserInf.uid])});
+                    {'rec_contacts': FieldValue.arrayUnion([UserInf.uid])});
               }
             }
         ),
