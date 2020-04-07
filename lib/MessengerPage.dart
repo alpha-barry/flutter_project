@@ -7,14 +7,6 @@ import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:provider/provider.dart';
 import 'NightMode.dart';
 
-class Test extends ChangeNotifier {
-  int i = 2;
-
-  void changeValue() {
-    i++;
-    notifyListeners();
-  }
-}
 
 class MessengerPage extends StatelessWidget {
   @override

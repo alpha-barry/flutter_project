@@ -21,14 +21,12 @@ class ProfilePageState extends State<ProfilePage>{
 
   bool isChecked = false;
 
-  // ignore: always_specify_types
-  Future getImage() async {
+  Future<void> getImage() async {
     final File image = await ImagePicker.pickImage(source: ImageSource.camera);
 
     final StorageReference storageReference = FirebaseStorage().ref().child('profiles/' + UserInf.uid + '/photo_de_profile');
     storageReference.putFile(image).onComplete.then((StorageTaskSnapshot onValue) {
-      // ignore: always_specify_types
-      onValue.ref.getDownloadURL().then((onValue){
+      onValue.ref.getDownloadURL().then((dynamic onValue){
         if (mounted) {
           setState(() {
             imgUrl = onValue;
@@ -40,8 +38,6 @@ class ProfilePageState extends State<ProfilePage>{
 
   @override
   void initState() {
-    // ignore: flutter_style_todos
-    // TODO: implement initState
     super.initState();
 
 
@@ -53,7 +49,7 @@ class ProfilePageState extends State<ProfilePage>{
 
     final StorageReference storageReference = FirebaseStorage.instance
         .ref().child('profiles/' + UserInf.uid + '/photo_de_profile');
-    storageReference.getDownloadURL().then((onValue) {
+    storageReference.getDownloadURL().then((dynamic onValue) {
       if (mounted) {
         setState(() {
           if (onValue != null)
@@ -65,8 +61,6 @@ class ProfilePageState extends State<ProfilePage>{
 
   @override
   Widget build(BuildContext context) {
-    // ignore: flutter_style_todos
-    // TODO: implement build
 
     return Scaffold(
       backgroundColor: Provider.of<NightMode>(context, listen: true).color,

@@ -3,16 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'NightMode.dart';
-
-// ignore: must_be_immutable
 
 class SignInPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // ignore: flutter_style_todos
-    // TODO: implement createState
     return SignInPageState();
   }
 
@@ -30,12 +25,10 @@ class SignInPageState extends State<SignInPage> {
     final AuthResult result = await _auth.signInWithEmailAndPassword(
         email: email, password: password);
     final FirebaseUser user = result.user;
-    //UserInf.uid = user.uid;
     return user.uid;
   }
 
-  // ignore: avoid_void_async
-  void getSaveUser() async {
+  Future<void> getSaveUser() async {
     prefs = await SharedPreferences.getInstance();
     email = prefs.getString('email');
     password = prefs.getString('pwd');
@@ -46,8 +39,6 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   void initState() {
-    // ignore: flutter_style_todos
-    // TODO: implement initState
     super.initState();
     getSaveUser();
   }
@@ -60,7 +51,7 @@ class SignInPageState extends State<SignInPage> {
       prefs.setString('pwd', password);
       UserInf.uid = onValue;
       Navigator.pushNamed(context, '/profil');
-    }).catchError((onError) {
+    }).catchError((dynamic onError) {
       isButtonPressed = false;
       if (mounted) {
         setState(() {
@@ -88,7 +79,7 @@ class SignInPageState extends State<SignInPage> {
                 child: TextField(
                   onChanged: (String text) => email = text,
                   decoration: const InputDecoration(
-                    border: const OutlineInputBorder(),
+                    border: OutlineInputBorder(),
                     labelText: 'email',
                   ),
                 ),

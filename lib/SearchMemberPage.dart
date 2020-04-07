@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
 import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:provider/provider.dart';
-
 import 'NightMode.dart';
 
 class SearchMemberPage extends StatelessWidget {
@@ -21,7 +20,6 @@ class SearchMemberPage extends StatelessWidget {
     );
   }
 }
-
 
 class SearchMemberPageStateful extends StatefulWidget {
   @override
@@ -66,24 +64,20 @@ class SearchMemberPageState extends State<SearchMemberPageStateful> {
 }
 
 class CustomCardState extends StatefulWidget {
+  const  CustomCardState(this.document);
   final DocumentSnapshot document;
-  // ignore: sort_constructors_first, prefer_const_constructors_in_immutables
-  CustomCardState(this.document);
 
   @override
   State<StatefulWidget> createState() {
-    // ignore: flutter_style_todos
-    // TODO: implement createState
     return CustomCard(document);
   }
 }
 
 class CustomCard extends State<CustomCardState> {
-  final DocumentSnapshot contact;
 
-  // ignore: sort_constructors_first
   CustomCard(this.contact);
 
+  final DocumentSnapshot contact;
   String status = '4';
   Icon icons = Icon(Icons.refresh);
 
@@ -92,12 +86,10 @@ class CustomCard extends State<CustomCardState> {
     super.initState();
 
     Firestore.instance.collection('profiles').document(UserInf.uid).snapshots().listen((DocumentSnapshot onValue){
-      // ignore: always_specify_types
-      final List contactsList = onValue.data['contacts'];
-      // ignore: always_specify_types
-      final List recContactsList = onValue.data['rec_contacts'];
-      // ignore: always_specify_types
-      final List sendContactsList = onValue.data['send_contacts'];
+      final List<String> contactsList = onValue.data['contacts'];
+      final List<String> recContactsList = onValue.data['rec_contacts'];
+      final List<String> sendContactsList = onValue.data['send_contacts'];
+
       if (mounted) {
         setState(() {
           if (contactsList != null && contactsList.contains(contact.documentID)) {
@@ -121,11 +113,8 @@ class CustomCard extends State<CustomCardState> {
   }
 
   void  removeContact(String userUid){
-    /*Firestore.instance.collection("profiles").document(UserInf.uid).snapshots().map((convert){
-      List list = convert.data[];
-    });*/
-    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayRemove([userUid])});
-    Firestore.instance.collection('profiles').document(userUid).updateData({'contacts': FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'contacts': FieldValue.arrayRemove(<String>[userUid])});
+    Firestore.instance.collection('profiles').document(userUid).updateData(<String, FieldValue>{'contacts': FieldValue.arrayRemove(<String>[UserInf.uid])});
 
     Firestore.instance.collection('chat/' +  UserInf.uid + '/conversations').document(userUid).delete();
     Firestore.instance.collection('chat/' + userUid + '/conversations').document(UserInf.uid).delete();
@@ -134,7 +123,7 @@ class CustomCard extends State<CustomCardState> {
   Future<void> removeContactAlertDialog(String userUid) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Suppression de contact'),
@@ -168,7 +157,7 @@ class CustomCard extends State<CustomCardState> {
   Future<void> cancelContactAlertDialog() async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Ajout de contact'),
@@ -183,8 +172,8 @@ class CustomCard extends State<CustomCardState> {
             FlatButton(
               child: const Text('Oui'),
               onPressed: () {
-                Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'send_contacts': FieldValue.arrayRemove([contact.documentID])});
-                Firestore.instance.collection('profiles').document(contact.documentID).updateData({'rec_contacts': FieldValue.arrayRemove([UserInf.uid])});
+                Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'send_contacts': FieldValue.arrayRemove(<String>[contact.documentID])});
+                Firestore.instance.collection('profiles').document(contact.documentID).updateData(<String, FieldValue>{'rec_contacts': FieldValue.arrayRemove(<String>[UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
@@ -201,13 +190,11 @@ class CustomCard extends State<CustomCardState> {
   }
 
   void  acceptContact(){
-    // ignore: always_specify_types
-    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact.documentID])}).then((onValue){
-      Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayUnion([contact.documentID])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'rec_contacts': FieldValue.arrayRemove(<String>[contact.documentID])}).then((dynamic onValue){
+      Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'contacts': FieldValue.arrayUnion(<String>[contact.documentID])});
     });
-    // ignore: always_specify_types
-    Firestore.instance.collection('profiles').document(contact.documentID).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
-      Firestore.instance.collection('profiles').document(contact.documentID).updateData({'contacts': FieldValue.arrayUnion([UserInf.uid])});
+    Firestore.instance.collection('profiles').document(contact.documentID).updateData(<String, FieldValue>{'send_contacts': FieldValue.arrayRemove(<String>[UserInf.uid])}).then((dynamic onValue){
+      Firestore.instance.collection('profiles').document(contact.documentID).updateData(<String, FieldValue>{'contacts': FieldValue.arrayUnion(<String>[UserInf.uid])});
     });
   }
 
@@ -236,8 +223,8 @@ class CustomCard extends State<CustomCardState> {
             FlatButton(
               child: const Text('Refuser'),
               onPressed: () {
-                Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact.documentID])});
-                Firestore.instance.collection('profiles').document(contact.documentID).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])});
+                Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'rec_contacts': FieldValue.arrayRemove(<String>[contact.documentID])});
+                Firestore.instance.collection('profiles').document(contact.documentID).updateData(<String, FieldValue>{'send_contacts': FieldValue.arrayRemove(<String>[UserInf.uid])});
                 Navigator.of(context).pop();
               },
             ),
@@ -263,8 +250,6 @@ class CustomCard extends State<CustomCardState> {
       icons = Icon(Icons.add);
     }
 
-    // ignore: flutter_style_todos
-    // TODO: implement build
     return Card(
       borderOnForeground: false,
       child: ListTile(
@@ -287,11 +272,11 @@ class CustomCard extends State<CustomCardState> {
                 Firestore.instance.collection('profiles')
                     .document(UserInf.uid)
                     .updateData(
-                    {'send_contacts': FieldValue.arrayUnion([contact.documentID])});
+                    <String, FieldValue>{'send_contacts': FieldValue.arrayUnion(<String>[contact.documentID])});
                 Firestore.instance.collection('profiles')
                     .document(contact.documentID)
                     .updateData(
-                    {'rec_contacts': FieldValue.arrayUnion([UserInf.uid])});
+                    <String, FieldValue>{'rec_contacts': FieldValue.arrayUnion(<String>[UserInf.uid])});
               }
             }
         ),

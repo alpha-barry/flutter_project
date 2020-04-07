@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:modue_flutter_ex2/widgets/headerWidget.dart';
 import 'package:provider/provider.dart';
-
 import 'NightMode.dart';
 import 'UserInf.dart';
 
@@ -30,25 +29,24 @@ class RecContactsPageStateful extends StatefulWidget {
 
 class RecContactsPageState extends State<RecContactsPageStateful> {
   void  acceptContact(DocumentSnapshot contact){
-    // ignore: always_specify_types
-    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact['uid']])}).then((onValue){
-      Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'contacts': FieldValue.arrayUnion([contact['uid']])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'rec_contacts': FieldValue.arrayRemove(<String>[contact['uid']])}).then((dynamic onValue){
+      Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'contacts': FieldValue.arrayUnion(<String>[contact['uid']])});
     });
-    // ignore: always_specify_types
-    Firestore.instance.collection('profiles').document(contact['uid']).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])}).then((onValue){
-      Firestore.instance.collection('profiles').document(contact['uid']).updateData({'contacts': FieldValue.arrayUnion([UserInf.uid])});
+
+    Firestore.instance.collection('profiles').document(contact['uid']).updateData(<String, FieldValue>{'send_contacts': FieldValue.arrayRemove(<String>[UserInf.uid])}).then((dynamic onValue){
+      Firestore.instance.collection('profiles').document(contact['uid']).updateData(<String, FieldValue>{'contacts': FieldValue.arrayUnion(<String>[UserInf.uid])});
     });
   }
 
   void  removeContact(DocumentSnapshot contact){
-    Firestore.instance.collection('profiles').document(UserInf.uid).updateData({'rec_contacts': FieldValue.arrayRemove([contact["uid"]])});
-    Firestore.instance.collection('profiles').document(contact['uid']).updateData({'send_contacts': FieldValue.arrayRemove([UserInf.uid])});
+    Firestore.instance.collection('profiles').document(UserInf.uid).updateData(<String, FieldValue>{'rec_contacts': FieldValue.arrayRemove(<String>[contact['uid']])});
+    Firestore.instance.collection('profiles').document(contact['uid']).updateData(<String, FieldValue>{'send_contacts': FieldValue.arrayRemove(<String>[UserInf.uid])});
   }
 
   Future<void> removeContactAlertDialog(DocumentSnapshot contact) async {
     return showDialog<void>(
       context: context,
-      barrierDismissible: true, // user must tap button!
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Ajout de contact'),

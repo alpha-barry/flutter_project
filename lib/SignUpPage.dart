@@ -9,8 +9,6 @@ import 'NightMode.dart';
 class SignUpPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    // ignore: flutter_style_todos
-    // TODO: implement createState
     return SignUpPageState();
   }
 
@@ -131,18 +129,16 @@ class SignUpPageState extends State<SignUpPage> {
                             uid.then((String onValue) {
                               Firestore.instance.collection('profiles').document(
                                   onValue)
-                                  .setData({
+                                  .setData(<String, String>{
                                 'firstName': firstName.trim(),
                                 'lastName': lastName.trim(),
                                 'uid': UserInf.uid
                               });
 
-                             // final StorageReference storageReference = FirebaseStorage().ref().child("profiles/" + UserInf.uid + "/photo_de_profile");
-                              //storageReference.putFile(image);
 
                               isButtonPressed = false;
                               Navigator.pushNamed(context, '/profil');
-                            }).catchError((onError) {
+                            }).catchError((dynamic onError) {
                               isButtonPressed = false;
                               if (mounted) {
                                 setState(() {
