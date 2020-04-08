@@ -44,18 +44,27 @@ class ProfilePageState extends State<ProfilePage>{
     imgUrl = 'https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34';
 
     Firestore.instance.document('profiles/' + UserInf.uid).snapshots().listen((DocumentSnapshot onData){
-      UserInf.fullName = onData.data['firstName'] + ' ' + onData.data['lastName'];
+      if (mounted) {
+        setState(() {
+          UserInf.fullName = onData.data['firstName'] + ' ' + onData.data['lastName'];
+        });
+      }
     });
 
     final StorageReference storageReference = FirebaseStorage.instance
         .ref().child('profiles/' + UserInf.uid + '/photo_de_profile');
-    storageReference.getDownloadURL().then((dynamic onValue) {
-      if (mounted) {
-        setState(() {
-          if (onValue != null)
-            imgUrl = onValue;
-        });
+
+    storageReference.getDownloadURL().then((Object onValue) {
+      if (onValue != null) {
+        if (mounted) {
+          setState(() {
+            if (onValue != null)
+              imgUrl = onValue;
+          });
+        }
       }
+    }).catchError((Object error) {
+      imgUrl = 'https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34';
     });
   }
 
