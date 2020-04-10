@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:modue_flutter_ex2/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Widget headerWidget(BuildContext context){
@@ -85,8 +86,12 @@ Widget headerWidget(BuildContext context){
             SharedPreferences.getInstance().then((SharedPreferences onValue){
               onValue.clear();
             });
-            Navigator.pushNamed(context, '/');
-          },
+            Navigator.pushAndRemoveUntil<void>(
+              context,
+              MaterialPageRoute<void>(builder: (BuildContext context) => MyApp()),
+                  (Route<dynamic> route) => false,
+            );
+            },
         ),
       ],
     ),

@@ -85,14 +85,15 @@ class CustomCard extends State<CustomCardState> {
   void initState() {
     super.initState();
 
-    Firestore.instance.collection('profiles').document(UserInf.uid).snapshots().listen((DocumentSnapshot onValue){
-      final List<String> contactsList = onValue.data['contacts'];
-      final List<String> recContactsList = onValue.data['rec_contacts'];
-      final List<String> sendContactsList = onValue.data['send_contacts'];
+    Firestore.instance.collection('profiles').document(UserInf.uid).snapshots().listen((DocumentSnapshot onValue) {
+      final List<dynamic> contactsList = onValue.data['contacts'];
+      final List<dynamic> recContactsList = onValue.data['rec_contacts'];
+      final List<dynamic> sendContactsList = onValue.data['send_contacts'];
 
       if (mounted) {
         setState(() {
-          if (contactsList != null && contactsList.contains(contact.documentID)) {
+          if (contactsList != null &&
+              contactsList.contains(contact.documentID)) {
             status = '0';
           }
           else if (recContactsList != null &&
@@ -108,7 +109,6 @@ class CustomCard extends State<CustomCardState> {
           }
         });
       }
-
     });
   }
 

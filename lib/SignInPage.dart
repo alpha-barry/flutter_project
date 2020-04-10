@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modue_flutter_ex2/UserInf.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'NightMode.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -64,7 +62,6 @@ class SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Provider.of<NightMode>(context, listen: true).color,
       resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: const Center(child: Text('Connexion')),

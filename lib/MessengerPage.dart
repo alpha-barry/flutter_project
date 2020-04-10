@@ -48,6 +48,8 @@ class MessengerPageState extends State<MessengerPageStateful> {
             imgUrl = onValue;
         });
       }
+    }).catchError((Object error) {
+      imgUrl = 'https://firebasestorage.googleapis.com/v0/b/flutterproject-1bb5a.appspot.com/o/photo_profile_fb.jpg?alt=media&token=538ede67-3318-4470-9a7e-192660080f34';
     });
   }
 
